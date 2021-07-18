@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Azure.IoT.ModelsRepository;
 using Microsoft.Azure.DigitalTwins.Parser;
+using Azure.Core.Diagnostics;
 
 namespace dtmitest
 {
@@ -13,20 +14,31 @@ namespace dtmitest
         {
             Console.WriteLine("Hello DTMI World!");
 
-            var client = new ModelsRepositoryClient();
-            Console.WriteLine($"Initialized client pointing to global endpoint: {client.RepositoryUri}");
+            //using AzureEventSourceListener listener = AzureEventSourceListener.CreateConsoleLogger();
+
+            var clientRaw = new ModelsRepositoryClient(
+                new Uri("https://raw.githubusercontent.com/sandervandevelde/DTMI-Starter/master"),
+                //new Uri("https://raw.githubusercontent.com/Azure/iot-plugandplay-models/main"),
+                new ModelsRepositoryClientOptions(dependencyResolution: ModelDependencyResolution.Enabled));
+
+            IDictionary<string, string> models = clientRaw.GetModels("dtmi:com:example:TemperatureController;1");
+
+            models.Keys.ToList().ForEach(k => Console.WriteLine(k));
+
+            //var client = new ModelsRepositoryClient();
+            //Console.WriteLine($"Initialized client pointing to global endpoint: {client.RepositoryUri}");
 
             var dtmi = "dtmi:com:example:TemperatureController;1";
-            IDictionary<string, string> models = await client.GetModelsAsync(dtmi).ConfigureAwait(false);
+            //IDictionary<string, string> models = await client.GetModelsAsync(dtmi).ConfigureAwait(false);
 
-            // In this case the above dtmi has 2 model dependencies.
-            // dtmi:com:example:Thermostat;1 and dtmi:azure:DeviceManagement:DeviceInformation;1
-            Console.WriteLine($"{dtmi} resolved in {models.Count} interfaces.");
+            //// In this case the above dtmi has 2 model dependencies.
+            //// dtmi:com:example:Thermostat;1 and dtmi:azure:DeviceManagement:DeviceInformation;1
+            //Console.WriteLine($"{dtmi} resolved in {models.Count} interfaces.");
 
-            foreach (var m in models)
-            {
-                Console.WriteLine($"Model {m.Key}");
-            }
+            //foreach (var m in models)
+            //{
+            //    Console.WriteLine($"Model {m.Key}");
+            //}
 
             var parser = new ModelParser();
             IReadOnlyDictionary<Dtmi, DTEntityInfo> parseResult = await parser.ParseAsync(models.Values.ToArray());
