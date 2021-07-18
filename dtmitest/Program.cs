@@ -7,19 +7,15 @@ using Microsoft.Azure.DigitalTwins.Parser;
 
 namespace dtmitest
 {
-    class Program
+    internal class Program
     {
-        static async Task Main(string[] args)
+        private static async Task Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-
+            Console.WriteLine("Hello DTMI World!");
 
             var client = new ModelsRepositoryClient();
             Console.WriteLine($"Initialized client pointing to global endpoint: {client.RepositoryUri}");
 
-            // The output of GetModelsAsync() will include at least the definition for the target dtmi.
-            // If the model dependency resolution configuration is not disabled, then models in which the
-            // target dtmi depends on will also be included in the returned IDictionary<string, string>.
             var dtmi = "dtmi:com:example:TemperatureController;1";
             IDictionary<string, string> models = await client.GetModelsAsync(dtmi).ConfigureAwait(false);
 
@@ -27,26 +23,30 @@ namespace dtmitest
             // dtmi:com:example:Thermostat;1 and dtmi:azure:DeviceManagement:DeviceInformation;1
             Console.WriteLine($"{dtmi} resolved in {models.Count} interfaces.");
 
-            foreach(var m in models)
+            foreach (var m in models)
             {
-                System.Console.WriteLine($"Model {m.Key}");
+                Console.WriteLine($"Model {m.Key}");
             }
 
+            var parser = new ModelParser();
+            IReadOnlyDictionary<Dtmi, DTEntityInfo> parseResult = await parser.ParseAsync(models.Values.ToArray());
+            Console.WriteLine($"{dtmi} resolved in {models.Count} interfaces with {parseResult.Count} entities.");
 
-            // var parser = new ModelParser();
-            // IReadOnlyDictionary<Dtmi, DTEntityInfo> parseResult = await parser.ParseAsync(models.Values.ToArray());
-            // Console.WriteLine($"{dtmi} resolved in {models.Count} interfaces with {parseResult.Count} entities.");                        
-            
-            var parser = new ModelParser
+            foreach (var p in parseResult)
             {
-                // Usage of the ModelsRepositoryClientExtensions.ParserDtmiResolver extension.
-                DtmiResolver = client.ParserDtmiResolver
-            };
+                Console.WriteLine($"Model {p.Value.GetType()}");
+            }
 
-            IReadOnlyDictionary<Dtmi, DTEntityInfo> parseResult = await parser.ParseAsync(models.Values.Take(1).ToArray());
-            Console.WriteLine($"{dtmi} resolved in {models.Count} interfaces with {parseResult.Count} entities."); // 38 entities
+            //var parser = new ModelParser
+            //{
+            //    // Usage of the ModelsRepositoryClientExtensions.ParserDtmiResolver extension.
+            //    DtmiResolver = client.ParserDtmiResolver
+            //};
 
-            foreach(var p in parseResult)
+            //IReadOnlyDictionary<Dtmi, DTEntityInfo> parseResult = await parser.ParseAsync(models.Values.Take(1).ToArray());
+            //Console.WriteLine($"{dtmi} resolved in {models.Count} interfaces with {parseResult.Count} entities."); // 38 entities
+
+            foreach (var p in parseResult)
             {
                 if (p.Value is Microsoft.Azure.DigitalTwins.Parser.DTTelemetryInfo)
                 {
@@ -60,13 +60,12 @@ namespace dtmitest
 
                     System.Console.WriteLine($"pt.EntityKind = {pt.EntityKind}");
 
-                    if (pt.Schema is Microsoft.Azure.DigitalTwins.Parser.DTDoubleInfo) 
+                    if (pt.Schema is Microsoft.Azure.DigitalTwins.Parser.DTDoubleInfo)
                     {
                         var ptdouble = pt.Schema as Microsoft.Azure.DigitalTwins.Parser.DTDoubleInfo;
 
-                        System.Console.WriteLine(  $"ptdouble {ptdouble.EntityKind} - {ptdouble.Description.First().Value} " );
+                        System.Console.WriteLine($"ptdouble {ptdouble.EntityKind} - {ptdouble.Description.First().Value} ");
                     }
-
                 }
 
                 // if (p.Value is Microsoft.Azure.DigitalTwins.Parser.DTCommandInfo)
@@ -75,7 +74,7 @@ namespace dtmitest
                 //     System.Console.WriteLine($"  EntityKind {p.Value.EntityKind.ToString()}");
                 //     //System.Console.WriteLine($"  Description {p.Value.Description.First()}");
                 //     System.Console.WriteLine($"  DefinedIn {p.Value.DefinedIn.AbsolutePath}");
-                //     ////System.Console.WriteLine($"Comment {p.Value.Comment.First()}"); 
+                //     ////System.Console.WriteLine($"Comment {p.Value.Comment.First()}");
                 // }
 
                 // if (p.Value is Microsoft.Azure.DigitalTwins.Parser.DTPropertyInfo)
