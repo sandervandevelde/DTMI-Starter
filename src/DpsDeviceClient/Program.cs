@@ -22,7 +22,7 @@ namespace DpsDeviceClient
                 GlobalDeviceEndpoint = "global.azure-devices-provisioning.net",
                 IdScope = "0ne0003BB8B",
                 Id = "PnPDeviceViaDps",
-                PrimaryKey = "SECRET",
+                PrimaryKey = "[Enrollment Primary key]",
             };
 
             await RunSampleAsync(parameters);
@@ -93,7 +93,7 @@ namespace DpsDeviceClient
             Console.WriteLine("Finished.");
         }
     }
-   
+
     internal class Parameters
     {
         public string IdScope { get; set; }

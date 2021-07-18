@@ -1,0 +1,37 @@
+{
+    "EnqueuedTimeUtc": "2021-07-18T13:00:36.0610000Z",
+    "Properties": {
+        "hubName": "edgedemo-ih",
+        "deviceId": "PnPDeviceViaDps",
+        "operationTimestamp": "2021-07-18T13:00:35.7653435Z",
+        "opType": "createDeviceIdentity",
+        "iothub-message-schema": "deviceLifecycleNotification"
+    },
+    "SystemProperties": {
+        "correlationId": "14b7400e96b6",
+        "connectionDeviceId": "PnPDeviceViaDps",
+        "contentType": "application/json",
+        "contentEncoding": "utf-8",
+        "userId": "ZWRnZWRlbW8taWg=",
+        "enqueuedTime": "2021-07-18T13:00:36.0610000Z"
+    },
+    "Body": {
+        "deviceId": "PnPDeviceViaDps",
+        "etag": "AAAAAAAAAAE=",
+        "version": 2,
+        "properties": {
+            "desired": {
+                "$metadata": {
+                    "$lastUpdated": "2021-07-18T13:00:35.7653435Z"
+                },
+                "$version": 1
+            },
+            "reported": {
+                "$metadata": {
+                    "$lastUpdated": "2021-07-18T13:00:35.7653435Z"
+                },
+                "$version": 1
+            }
+        }
+    }
+}

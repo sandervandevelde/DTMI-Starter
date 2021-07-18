@@ -1,0 +1,25 @@
+{
+    "EnqueuedTimeUtc": "2021-07-18T13:00:39.6860000Z",
+    "Properties": {
+        "hubName": "edgedemo-ih",
+        "deviceId": "PnPDeviceViaDps",
+        "operationTimestamp": "2021-07-18T13:00:39.6825493Z",
+        "iothub-message-schema": "digitalTwinChangeNotification",
+        "opType": "updateTwin"
+    },
+    "SystemProperties": {
+        "correlationId": "14b74261c1ce",
+        "connectionDeviceId": "PnPDeviceViaDps",
+        "contentType": "application/json-patch+json",
+        "contentEncoding": "utf-8",
+        "userId": "ZWRnZWRlbW8taWg=",
+        "enqueuedTime": "2021-07-18T13:00:39.6860000Z"
+    },
+    "Body": [
+        {
+            "op": "replace",
+            "path": "/$metadata/$model",
+            "value": "dtmi:com:example:NotExisting;2"
+        }
+    ]
+}
